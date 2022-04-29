@@ -1,6 +1,7 @@
+import React, { useState } from "react";
 import styled from "styled-components";
-import {Link} from "react-router-dom";
-
+import {Link, useNavigate} from "react-router-dom";
+import {loginUser} from "../services/services.js";
 
 const Container = styled.div`
   width: 100vw;
@@ -48,18 +49,40 @@ const Button = styled.button`
 `;
 
 const Login = () => {
+  
+const navigate = useNavigate();
+  const [emailId, setEmailId] = useState('');
+const [password, setPassword] = useState('');
+
+const handleLogin =  async e => {
+  e.preventDefault();
+  const token = await loginUser({emailId, password});
+ 
+  
+  if(!token) {
+    console.log('Login failed. No token');
+    return;
+    }
+ 
+  localStorage.setItem('token', token);
+  navigate('/home');
+
+}
+
+
+
   return (
     
     <Container>
       <Wrapper>
         <Title> SIGN IN </Title>
         <From>
-          <Input placeholder="Email" />
-          <Input placeholder="Passward" />
+          <Input  onChange={e => setEmailId(e.target.value)} value={emailId} placeholder="Email" />
+          <Input onChange={e => setPassword(e.target.value)} value={password}placeholder="Password" type="password" />
 
-          <Button> LOGIN </Button>
+          <Button onClick={handleLogin}> LOGIN </Button>
           
-         
+           
           <Link to="Register">
            <div>CREATE AN ACCOUNT </div> 
             </Link>
